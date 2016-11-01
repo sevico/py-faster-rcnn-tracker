@@ -5,7 +5,7 @@ import argparse
 import sys
 import os.path as osp
 
-from configuration.config import cfg
+#from configuration.config import cfg
 from datasetfactory.ILSVRC import ILSVRC_handler
 from datasetfactory.imdb import IMDB
 from solver import train_net
@@ -49,7 +49,7 @@ if __name__ == '__main__':
     caffe.set_mode_gpu()
     caffe.set_device(args.gpu_id)
 
-    dataset = osp.join(cfg.TRAIN.DATA_DIR, args.dataset)
+    dataset = osp.join('data', args.dataset)
     print 'Dataset path: {}'.format(dataset)
 
     imdb = IMDB()
