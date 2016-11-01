@@ -1,5 +1,6 @@
 from configuration.config import cfg
-import PIL
+from PIL import Image
+
 
 class IMDB(object):
     """Image Database Class for image pre-processing."""
@@ -14,7 +15,7 @@ class IMDB(object):
     def append_flipped_image(self):
         """Append flipped image to the Region-of-Interest database."""
         for entry in self.original_roidb:
-            size = PIL.Image.open(entry).size
+            size = Image.open(entry).size
             boxes = entry['boxes'].copy()
             oldx1 = boxes[:, 0].copy()
             oldx2 = boxes[:, 2].copy()
@@ -27,7 +28,7 @@ class IMDB(object):
                 'gt_overlaps': entry['gt_overlaps'],
                 'gt_classes': entry['gt_classes'],
                 'flipped': True}
-            self.extend_roidb.append(entry)
+            self.extend_roidb.append(flipped_entry)
 
     def append_transpose_image(self):
         """Append transpose image to the Region-of-Interest database."""

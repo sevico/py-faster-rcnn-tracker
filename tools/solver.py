@@ -20,6 +20,8 @@ class SolverWrapper(object):
                  pretrained_model=None):
         """Initialize the SolverWrapper."""
         self.output_dir = output_dir
+        if not os.path.exists(output_dir):
+            os.mkdir(output_dir)
 
         if (cfg.TRAIN.HAS_RPN and cfg.TRAIN.BBOX_REG and
             cfg.TRAIN.BBOX_NORMALIZE_TARGETS):
@@ -104,18 +106,15 @@ class SolverWrapper(object):
             model_paths.append(self.snapshot())
         return model_paths
 
+
 def get_training_roidb(imdb):
     """Returns a roidb (Region of Interest database) for use in training."""
-    if cfg.TRAIN.USE_FLIPPED:
-        print 'Appending horizontally-flipped training examples...'
-        imdb.append_flipped_images()
-        print 'done'
-
     print 'Preparing training data...'
     rdl_roidb.prepare_roidb(imdb)
     print 'done'
 
     return imdb.roidb
+
 
 def filter_roidb(roidb):
     """Remove roidb entries that have no usable RoIs."""
@@ -140,3 +139,16 @@ def filter_roidb(roidb):
     print 'Filtered {} roidb entries: {} -> {}'.format(num - num_after,
                                                        num, num_after)
     return filtered_roidb
+
+
+def train_net(solver_prototxt, imdb, output_dir, max_iters=40000, pretrained_model=None):
+    roidb = get_training_roidb(imdb)
+    filtered_roidb = filter_roidb(roidb)
+
+    print 'Building solver ......'
+    solver = SolverWrapper(solver_prototxt, filtered_roidb, output_dir, pretrained_model)
+
+    print 'roidb: {} -> {}'.format(len(roidb), len(filtered_roidb))
+
+    print 'Begin training with iters {} ......'.format(max_iters)
+    solver.train_model(max_iters)
