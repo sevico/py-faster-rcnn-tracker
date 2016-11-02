@@ -122,6 +122,7 @@ def _load_class_labels(dataset):
 
 
 def ILSVRC_handler(dataset):
+    dataset = dataset['dataset']
     class_labels, class_indexes = _load_class_labels(dataset)
     roidb = _load_data(dataset, class_indexes)
     return class_labels, roidb

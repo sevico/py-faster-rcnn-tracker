@@ -8,7 +8,7 @@ from caffe.proto import caffe_pb2
 from fast_rcnn.config import cfg
 from utils.timer import Timer
 
-from configuration.config as ccfg
+from configuration.config import cfg as ccfg
 
 
 class SolverWrapper(object):
