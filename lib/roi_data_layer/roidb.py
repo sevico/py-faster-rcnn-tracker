@@ -21,9 +21,9 @@ def prepare_roidb(imdb):
     recorded.
     """
     roidb = imdb.roidb
-    sizes = [Image.open(entry).size
+    sizes = [Image.open(entry['image']).size
              for entry in roidb]
-    for i in xrange(len(imdb.image_index)):
+    for i in xrange(len(roidb)):
         roidb[i]['width'] = sizes[i][0]
         roidb[i]['height'] = sizes[i][1]
         # need gt_overlaps as a dense array for argmax

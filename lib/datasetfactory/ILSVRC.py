@@ -47,6 +47,8 @@ def prepare_train_text(dataset):
             if objname not in classes:
                 classes.append(objname)
     classes.sort()
+    # insert __background__
+    classes.insert(0, '__background__')
     for ind, _class in enumerate(classes):
         sysnets.write(_class + ' ' + str(ind) + '\n')
     sysnets.close()
@@ -56,7 +58,7 @@ def prepare_train_text(dataset):
     for ix, xml in enumerate(xmls):
         img_path = osp.splitext(xml)[0]
         train_txt.write(img_path + '\n')
-        if (ix + 1) % 1000:
+        if (ix + 1) % 1000 == 0:
             print 'Processed {} files'.format(ix + 1)
     train_txt.close()
 
@@ -98,7 +100,7 @@ def load_annotation(num_classes, xml, class_indexes):
 def _load_data(dataset, class_indexes):
     train_txt = osp.join(dataset, 'train.txt')
     with open(train_txt, 'rb') as f:
-        train_datas = [train_data.strip('\n') for train_data in f.readlines()]
+        train_datas = [train_data.strip('\n') for train_data in f.readlines()][: 10000]
     image = [osp.join(dataset, 'Data', train_data) + '.JPEG' for train_data in train_datas]
     annotations = [osp.join(dataset, 'Annotations', train_data) + '.xml' for train_data in train_datas]
 
@@ -106,7 +108,7 @@ def _load_data(dataset, class_indexes):
     # add image path to each entry
     for ind, entry in enumerate(roidb):
         entry['image'] = image[ind]
-
+    
     return roidb
 
 
@@ -130,5 +132,5 @@ def ILSVRC_handler(dataset):
     return class_labels, roidb
 
 if __name__ == '__main__':
-    dataset = osp.join('data')
+    dataset = osp.join('data', 'ILSVRC2015')
     prepare_train_text(dataset)

@@ -16,7 +16,7 @@ class IMDB(object):
     def append_flipped_image(self):
         """Append flipped image to the Region-of-Interest database."""
         for entry in self.original_roidb:
-            size = Image.open(entry).size
+            size = Image.open(entry['image']).size
             boxes = entry['boxes'].copy()
             oldx1 = boxes[:, 0].copy()
             oldx2 = boxes[:, 2].copy()

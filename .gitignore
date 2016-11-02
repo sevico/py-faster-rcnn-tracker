@@ -92,3 +92,5 @@ ENV/
 
 # caffemodel
 *.caffemodel
+
+caffe-fast-rcnn

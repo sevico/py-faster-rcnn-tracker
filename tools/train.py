@@ -30,6 +30,9 @@ def parse_args():
     parser.add_argument('--out', dest='out',
                         help='output directory',
                         default='out', type=str)
+    parser.add_argument('--max_iters', dest='max_iters',
+                        help='Max iterations',
+                        default=40000, type=int)
 
     if len(sys.argv) == 1:
         parser.print_help()
@@ -60,5 +63,5 @@ if __name__ == '__main__':
     print 'Output will be saved to `{:s}`'.format(output_dir)
 
     train_net(args.solver, imdb, output_dir,
-              pretrained_model=args.pretrained_model,
+              pretrained_model=args.weights,
               max_iters=args.max_iters)
