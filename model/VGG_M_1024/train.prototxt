@@ -7,7 +7,7 @@ layer {
   top: 'gt_boxes'
   python_param {
     module: 'roi_data_layer.layer'
-    layer: 'DataLayer'
+    layer: 'RoIDataLayer'
     param_str: "'num_classes': 201"
   }
 }

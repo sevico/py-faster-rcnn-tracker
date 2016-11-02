@@ -14,7 +14,7 @@ years = {'2013': '2013',
 
 name = 'ILSVRC'
 
-_MAX_TRAIN_NUM = 200000
+_MAX_TRAIN_NUM = 20000
 
 
 def prepare_train_text(dataset):
@@ -61,14 +61,12 @@ def prepare_train_text(dataset):
 
     # Fourth step: write train
     train_txt = open(osp.join(dataset, 'train.txt'), 'wb')
-    xmls = np.random.permutation(xmls)
+    xmls = np.random.permutation(xmls)[: _MAX_TRAIN_NUM]
     for ix, xml in enumerate(xmls):
         img_path = osp.splitext(xml)[0]
         train_txt.write(img_path + '\n')
         if (ix + 1) % 1000 == 0:
             print 'Processed {} files'.format(ix + 1)
-        if (ix + 1) >= _MAX_TRAIN_NUM:
-            break
     train_txt.close()
 
 
