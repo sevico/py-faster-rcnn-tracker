@@ -53,9 +53,11 @@ def prepare_train_text(dataset):
 
     # Fourth step: write train
     train_txt = open(osp.join(dataset, 'train.txt'), 'wb')
-    for xml in xmls:
-        img_path = osp.join('Data', osp.splitext(xml)[0])
+    for ix, xml in enumerate(xmls):
+        img_path = osp.splitext(xml)[0]
         train_txt.write(img_path + '\n')
+        if (ix + 1) % 1000:
+            print 'Processed {} files'.format(ix + 1)
     train_txt.close()
 
 
