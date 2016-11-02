@@ -1,5 +1,6 @@
-from configuration.config import cfg
 from PIL import Image
+
+from lib.configuration import cfg
 
 
 class IMDB(object):

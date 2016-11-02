@@ -1,14 +1,15 @@
-import caffe
-from fast_rcnn.config import cfg
-import roi_data_layer.roidb as rdl_roidb
-from utils.timer import Timer
-import numpy as np
 import os
 
-import configuration.config.cfg as ccfg
-
-from caffe.proto import caffe_pb2
+import caffe
 import google.protobuf as pb2
+import numpy as np
+import roi_data_layer.roidb as rdl_roidb
+from caffe.proto import caffe_pb2
+from fast_rcnn.config import cfg
+from utils.timer import Timer
+
+from configuration.config as ccfg
+
 
 class SolverWrapper(object):
     """A simple wrapper around Caffe's solver.
