@@ -14,6 +14,8 @@ years = {'2013': '2013',
 
 name = 'ILSVRC'
 
+_MAX_TRAIN_NUM = 200000
+
 
 def prepare_train_text(dataset):
     """ Prepare training text with xml annotation files.
@@ -36,30 +38,37 @@ def prepare_train_text(dataset):
     print 'There are {} xml files.'.format(len(xmls))
 
     # Third step: parse xml files and assign class labels
-    sysnets = open(osp.join(dataset, 'sysnets.txt'), 'wb')
-    classes = []
-    for xml in xmls:
-        filename = osp.join(ann_root, xml)
-        tree = ET.parse(filename)
-        objs = tree.findall('object')
-        for obj in objs:
-            objname = obj.find('name').text.strip()
-            if objname not in classes:
-                classes.append(objname)
-    classes.sort()
-    # insert __background__
-    classes.insert(0, '__background__')
-    for ind, _class in enumerate(classes):
-        sysnets.write(_class + ' ' + str(ind) + '\n')
-    sysnets.close()
+    # if 'sysnets.txt' exists, we skip this part since it is time-consuming
+    if not os.path.exists(osp.join(dataset, 'sysnets.txt')):
+        sysnets = open(osp.join(dataset, 'sysnets.txt'), 'wb')
+        classes = []
+        for xml in xmls:
+            filename = osp.join(ann_root, xml)
+            tree = ET.parse(filename)
+            objs = tree.findall('object')
+            for obj in objs:
+                objname = obj.find('name').text.strip()
+                if objname not in classes:
+                    classes.append(objname)
+        classes.sort()
+        # insert __background__
+        classes.insert(0, '__background__')
+        for ind, _class in enumerate(classes):
+            sysnets.write(_class + ' ' + str(ind) + '\n')
+        sysnets.close()
+    else:
+        print 'sysnets.txt exists and skip building sysnets.txt'
 
     # Fourth step: write train
     train_txt = open(osp.join(dataset, 'train.txt'), 'wb')
+    xmls = np.random.permutation(xmls)
     for ix, xml in enumerate(xmls):
         img_path = osp.splitext(xml)[0]
         train_txt.write(img_path + '\n')
         if (ix + 1) % 1000 == 0:
             print 'Processed {} files'.format(ix + 1)
+        if (ix + 1) >= _MAX_TRAIN_NUM:
+            break
     train_txt.close()
 
 
@@ -100,7 +109,9 @@ def load_annotation(num_classes, xml, class_indexes):
 def _load_data(dataset, class_indexes):
     train_txt = osp.join(dataset, 'train.txt')
     with open(train_txt, 'rb') as f:
-        train_datas = [train_data.strip('\n') for train_data in f.readlines()][: 10000]
+        train_datas = [train_data.strip('\n') for train_data in f.readlines()]
+    print 'Totally {} training files'.format(len(train_datas))
+
     image = [osp.join(dataset, 'Data', train_data) + '.JPEG' for train_data in train_datas]
     annotations = [osp.join(dataset, 'Annotations', train_data) + '.xml' for train_data in train_datas]
 
